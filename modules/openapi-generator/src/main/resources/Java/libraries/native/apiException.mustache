@@ -3,6 +3,7 @@
 package {{invokerPackage}};
 
 import java.net.http.HttpHeaders;
+import org.vcell.restclient.model.VCellHTTPError;
 
 {{>generatedAnnotation}}
 public class ApiException extends{{#useRuntimeException}} RuntimeException {{/useRuntimeException}}{{^useRuntimeException}} Exception {{/useRuntimeException}}{
@@ -11,6 +12,8 @@ public class ApiException extends{{#useRuntimeException}} RuntimeException {{/us
     private int code = 0;
     private HttpHeaders responseHeaders = null;
     private String responseBody = null;
+    private VCellHTTPError error;
+
 
     public ApiException() {}
 
@@ -22,23 +25,24 @@ public class ApiException extends{{#useRuntimeException}} RuntimeException {{/us
         super(message);
     }
 
-    public ApiException(String message, Throwable throwable, int code, HttpHeaders responseHeaders, String responseBody) {
+    public ApiException(String message, Throwable throwable, int code, HttpHeaders responseHeaders, String responseBody, VCellHTTPError error) {
         super(message, throwable);
         this.code = code;
         this.responseHeaders = responseHeaders;
         this.responseBody = responseBody;
+        this.error = error;
     }
 
-    public ApiException(String message, int code, HttpHeaders responseHeaders, String responseBody) {
-        this(message, (Throwable) null, code, responseHeaders, responseBody);
+    public ApiException(String message, int code, HttpHeaders responseHeaders, String responseBody, VCellHTTPError error) {
+        this(message, (Throwable) null, code, responseHeaders, responseBody, error);
     }
 
     public ApiException(String message, Throwable throwable, int code, HttpHeaders responseHeaders) {
-        this(message, throwable, code, responseHeaders, null);
+        this(message, throwable, code, responseHeaders, null, null);
     }
 
     public ApiException(int code, HttpHeaders responseHeaders, String responseBody) {
-        this((String) null, (Throwable) null, code, responseHeaders, responseBody);
+        this((String) null, (Throwable) null, code, responseHeaders, responseBody, null);
     }
 
     public ApiException(int code, String message) {
@@ -46,10 +50,11 @@ public class ApiException extends{{#useRuntimeException}} RuntimeException {{/us
         this.code = code;
     }
 
-    public ApiException(int code, String message, HttpHeaders responseHeaders, String responseBody) {
+    public ApiException(int code, String message, HttpHeaders responseHeaders, String responseBody, VCellHTTPError error) {
         this(code, message);
         this.responseHeaders = responseHeaders;
         this.responseBody = responseBody;
+        this.error = error;
     }
 
     /**
@@ -78,4 +83,9 @@ public class ApiException extends{{#useRuntimeException}} RuntimeException {{/us
     public String getResponseBody() {
         return responseBody;
     }
+
+    public VCellHTTPError getVCellError(){
+        return error;
+    }
+    
 }
